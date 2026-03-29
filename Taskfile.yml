@@ -1,0 +1,103 @@
+version: "3"
+
+vars:
+  VENV: .venv
+  PYTHON: "{{.VENV}}/bin/python"
+  PIP: "{{.VENV}}/bin/pip"
+  DATA_RAW: data/raw
+  DATA_PROCESSED: data/processed
+
+tasks:
+  # ---------- Setup ----------
+
+  setup:
+    desc: Create venv and install all dependencies
+    cmds:
+      - python3 -m venv {{.VENV}}
+      - "{{.PIP}} install -e '.[dev]'"
+    status:
+      - test -f {{.VENV}}/bin/activate
+
+  # ---------- Data Collection ----------
+
+  scrape:cqi:
+    desc: Download CQI dataset from Kaggle (requires Kaggle API token)
+    cmds:
+      - mkdir -p {{.DATA_RAW}}
+      - "uvx kaggle datasets download -d fatihb/coffee-quality-data-cqi -p {{.DATA_RAW}} --unzip"
+    status:
+      - test -f {{.DATA_RAW}}/df_arabica_clean.csv
+
+  scrape:coe:
+    desc: Scrape Cup of Excellence auction results
+    deps: [setup]
+    cmds:
+      - mkdir -p {{.DATA_RAW}}
+      - "{{.PYTHON}} scrapers/cup_of_excellence.py"
+
+  scrape:climate:
+    desc: Fetch NASA POWER climate data (example region)
+    deps: [setup]
+    cmds:
+      - mkdir -p {{.DATA_RAW}}
+      - "{{.PYTHON}} scrapers/nasa_power.py"
+
+  scrape:all:
+    desc: Run all scrapers/data collection
+    cmds:
+      - task: scrape:cqi
+      - task: scrape:coe
+      - task: scrape:climate
+
+  # ---------- Notebooks ----------
+
+  notebook:
+    desc: Launch Jupyter notebook server
+    deps: [setup]
+    cmds:
+      - "{{.PYTHON}} -m jupyter notebook notebooks/"
+
+  # ---------- Data Inspection ----------
+
+  data:summary:
+    desc: Print a summary of the CQI dataset
+    deps: [setup]
+    cmds:
+      - "{{.PYTHON}} scrapers/cqi_loader.py"
+
+  data:ls:
+    desc: List all collected data files
+    cmds:
+      - find data/ -type f -not -name '.gitkeep' | sort
+
+  # ---------- Maintenance ----------
+
+  clean:data:
+    desc: Remove all raw and processed data files
+    prompt: This will delete all data files. Continue?
+    cmds:
+      - rm -rf {{.DATA_RAW}}/*
+      - rm -rf {{.DATA_PROCESSED}}/*
+
+  clean:venv:
+    desc: Remove the virtual environment
+    cmds:
+      - rm -rf {{.VENV}}
+
+  clean:
+    desc: Remove venv and all data
+    cmds:
+      - task: clean:venv
+      - task: clean:data
+
+  lint:
+    desc: Lint all Python files with ruff
+    deps: [setup]
+    cmds:
+      - "{{.VENV}}/bin/ruff check scrapers/ utils/"
+
+  fmt:
+    desc: Format all Python files with ruff
+    deps: [setup]
+    cmds:
+      - "{{.VENV}}/bin/ruff format scrapers/ utils/"

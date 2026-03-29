@@ -1,0 +1,20 @@
+[project]
+name = "coffee-data"
+version = "0.1.0"
+description = "Coffee industry data collection — farms, climate, fermentation, and quality scores"
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.31",
+    "pandas>=2.2",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.1",
+    "jupyter>=1.0",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipykernel>=6.29",
+    "ruff>=0.3",
+]
