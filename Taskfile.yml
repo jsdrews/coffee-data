@@ -62,7 +62,7 @@ tasks:
     deps: [setup]
     cmds:
       - mkdir -p docs
-      - uv run jupyter nbconvert --to html --execute --output-dir=docs notebooks/*.ipynb
+      - uv run jupyter nbconvert --to html --execute --no-input --output-dir=docs notebooks/*.ipynb
       - echo "Exported to docs/"
 
   # ---------- Data Inspection ----------
