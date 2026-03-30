@@ -1,10 +1,8 @@
 """
 Loader for the Coffee Quality Institute (CQI) dataset.
 
-Download the CSV from Kaggle first:
-https://www.kaggle.com/datasets/fatihb/coffee-quality-data-cqi
-
-Place the file(s) in data/raw/ and use this script to load and clean them.
+Source: https://github.com/jldbc/coffee-quality-database
+~1,300 Arabica reviews with cupping scores, farm info, and processing methods.
 """
 
 from pathlib import Path
@@ -12,15 +10,20 @@ from pathlib import Path
 import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RAW_PATH = str(PROJECT_ROOT / "data" / "raw" / "df_arabica_clean.csv")
+RAW_PATH = str(PROJECT_ROOT / "data" / "raw" / "arabica_data_cleaned.csv")
 
 
 def load_cqi_data(path: str = RAW_PATH) -> pd.DataFrame:
     """Load and lightly clean the CQI Arabica dataset."""
     df = pd.read_csv(path)
 
-    # Standardize column names
-    df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+    # Standardize column names (this dataset uses dots instead of spaces)
+    df.columns = (
+        df.columns.str.strip()
+        .str.lower()
+        .str.replace(".", "_", regex=False)
+        .str.replace(" ", "_")
+    )
 
     # Cupping score columns (for quick reference)
     cupping_cols = [
