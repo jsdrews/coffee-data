@@ -1,9 +1,6 @@
 version: "3"
 
 vars:
-  VENV: .venv
-  PYTHON: "{{.VENV}}/bin/python"
-  PIP: "{{.VENV}}/bin/pip"
   DATA_RAW: data/raw
   DATA_PROCESSED: data/processed
 
@@ -13,10 +10,16 @@ tasks:
   setup:
     desc: Create venv and install all dependencies
     cmds:
-      - python3 -m venv {{.VENV}}
-      - "{{.PIP}} install -e '.[dev]'"
+      - uv sync --all-extras
     status:
-      - test -f {{.VENV}}/bin/activate
+      - test -f .venv/bin/activate
+
+  shell:
+    desc: Open an interactive shell with the venv activated
+    deps: [setup]
+    interactive: true
+    cmds:
+      - fish -C "source .venv/bin/activate.fish"
 
   # ---------- Data Collection ----------
 
@@ -33,21 +36,18 @@ tasks:
     deps: [setup]
     cmds:
       - mkdir -p {{.DATA_RAW}}
-      - "{{.PYTHON}} scrapers/cup_of_excellence.py"
+      - uv run python scrapers/cup_of_excellence.py
 
   scrape:climate:
     desc: Fetch NASA POWER climate data (example region)
     deps: [setup]
     cmds:
       - mkdir -p {{.DATA_RAW}}
-      - "{{.PYTHON}} scrapers/nasa_power.py"
+      - uv run python scrapers/nasa_power.py
 
-  scrape:all:
-    desc: Run all scrapers/data collection
-    cmds:
-      - task: scrape:cqi
-      - task: scrape:coe
-      - task: scrape:climate
+  scrape:
+    desc: Run all scrapers/data collection concurrently
+    deps: [scrape:cqi, scrape:coe, scrape:climate]
 
   # ---------- Notebooks ----------
 
@@ -55,7 +55,7 @@ tasks:
     desc: Launch Jupyter notebook server
     deps: [setup]
     cmds:
-      - "{{.PYTHON}} -m jupyter notebook notebooks/"
+      - uv run jupyter notebook notebooks/
 
   # ---------- Data Inspection ----------
 
@@ -63,7 +63,7 @@ tasks:
     desc: Print a summary of the CQI dataset
     deps: [setup]
     cmds:
-      - "{{.PYTHON}} scrapers/cqi_loader.py"
+      - uv run python scrapers/cqi_loader.py
 
   data:ls:
     desc: List all collected data files
@@ -82,7 +82,7 @@ tasks:
   clean:venv:
     desc: Remove the virtual environment
     cmds:
-      - rm -rf {{.VENV}}
+      - rm -rf .venv
 
   clean:
     desc: Remove venv and all data
@@ -94,10 +94,10 @@ tasks:
     desc: Lint all Python files with ruff
     deps: [setup]
     cmds:
-      - "{{.VENV}}/bin/ruff check scrapers/ utils/"
+      - uv run ruff check scrapers/ utils/
 
   fmt:
     desc: Format all Python files with ruff
     deps: [setup]
     cmds:
-      - "{{.VENV}}/bin/ruff format scrapers/ utils/"
+      - uv run ruff format scrapers/ utils/

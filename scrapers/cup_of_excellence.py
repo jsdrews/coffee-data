@@ -6,10 +6,10 @@ Collects cupping scores, auction prices, farm names, and regions
 for coffees across 11+ producing countries (1999–present).
 """
 
-import time
+import asyncio
 
+import aiohttp
 import pandas as pd
-import requests
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://cupofexcellence.org/competition-auction-results"
@@ -35,15 +35,24 @@ HEADERS = {
     "User-Agent": "CoffeeDataResearch/0.1 (academic research project)"
 }
 
+MAX_CONCURRENT = 4
 
-def get_country_page(country: str) -> BeautifulSoup | None:
+
+async def get_country_page(
+    session: aiohttp.ClientSession, country: str
+) -> tuple[str, BeautifulSoup | None]:
     """Fetch the results page for a given country."""
     url = f"{BASE_URL}/{country}"
-    resp = requests.get(url, headers=HEADERS, timeout=30)
-    if resp.status_code != 200:
-        print(f"Failed to fetch {country}: {resp.status_code}")
-        return None
-    return BeautifulSoup(resp.text, "lxml")
+    try:
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+            if resp.status != 200:
+                print(f"Failed to fetch {country}: {resp.status}")
+                return country, None
+            html = await resp.text()
+            return country, BeautifulSoup(html, "lxml")
+    except Exception as e:
+        print(f"Error fetching {country}: {e}")
+        return country, None
 
 
 def parse_results_table(soup: BeautifulSoup) -> list[dict]:
@@ -63,25 +72,32 @@ def parse_results_table(soup: BeautifulSoup) -> list[dict]:
     return rows
 
 
-def scrape_all_countries(delay: float = 2.0) -> pd.DataFrame:
-    """Scrape results for all countries with a polite delay between requests."""
+async def scrape_all_countries() -> pd.DataFrame:
+    """Scrape results for all countries concurrently."""
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT)
     all_results = []
-    for country in COUNTRIES:
-        print(f"Scraping {country}...")
-        soup = get_country_page(country)
-        if soup:
-            results = parse_results_table(soup)
-            for row in results:
-                row["country"] = country
-            all_results.extend(results)
-        time.sleep(delay)
 
-    df = pd.DataFrame(all_results)
-    return df
+    async def fetch(session: aiohttp.ClientSession, country: str):
+        async with semaphore:
+            print(f"Scraping {country}...")
+            return await get_country_page(session, country)
+
+    async with aiohttp.ClientSession(headers=HEADERS) as session:
+        tasks = [fetch(session, country) for country in COUNTRIES]
+        results = await asyncio.gather(*tasks)
+
+    for country, soup in results:
+        if soup:
+            rows = parse_results_table(soup)
+            for row in rows:
+                row["country"] = country
+            all_results.extend(rows)
+
+    return pd.DataFrame(all_results)
 
 
 if __name__ == "__main__":
-    df = scrape_all_countries()
+    df = asyncio.run(scrape_all_countries())
     output_path = "data/raw/cup_of_excellence.csv"
     df.to_csv(output_path, index=False)
     print(f"Saved {len(df)} rows to {output_path}")

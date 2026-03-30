@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Coffee industry data collection — farms, climate, fermentation, and quality scores"
 requires-python = ">=3.11"
 dependencies = [
+    "aiohttp>=3.9",
     "requests>=2.31",
     "pandas>=2.2",
     "beautifulsoup4>=4.12",
@@ -11,6 +12,9 @@ dependencies = [
     "jupyter>=1.0",
     "matplotlib>=3.8",
     "seaborn>=0.13",
+    "plotly>=5.18",
+    "pycountry>=24.6",
+    "statsmodels>=0.14",
 ]
 
 [project.optional-dependencies]

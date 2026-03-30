@@ -7,9 +7,12 @@ https://www.kaggle.com/datasets/fatihb/coffee-quality-data-cqi
 Place the file(s) in data/raw/ and use this script to load and clean them.
 """
 
+from pathlib import Path
+
 import pandas as pd
 
-RAW_PATH = "data/raw/df_arabica_clean.csv"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+RAW_PATH = str(PROJECT_ROOT / "data" / "raw" / "df_arabica_clean.csv")
 
 
 def load_cqi_data(path: str = RAW_PATH) -> pd.DataFrame:
