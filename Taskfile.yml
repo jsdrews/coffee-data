@@ -49,6 +49,22 @@ tasks:
     desc: Run all scrapers/data collection concurrently
     deps: [scrape:cqi, scrape:coe, scrape:climate]
 
+  geocode:
+    desc: Geocode CQI farm regions to lat/lon coordinates
+    deps: [setup]
+    cmds:
+      - uv run python scrapers/geocode.py
+    status:
+      - test -f data/processed/geocoded_regions.csv
+
+  climate:merge:
+    desc: Fetch NASA POWER climate data and merge with CQI dataset
+    deps: [setup, geocode]
+    cmds:
+      - uv run python scrapers/climate_merge.py
+    status:
+      - test -f data/processed/cqi_with_climate.csv
+
   # ---------- Notebooks ----------
 
   notebook:
@@ -62,7 +78,7 @@ tasks:
     deps: [setup]
     cmds:
       - mkdir -p docs
-      - uv run jupyter nbconvert --to html --execute --no-input --output-dir=docs notebooks/*.ipynb
+      - uv run jupyter nbconvert --to html --execute --no-input --output-dir=docs notebooks/what_makes_coffee_score_high.ipynb
       - echo "Exported to docs/"
 
   # ---------- Data Inspection ----------

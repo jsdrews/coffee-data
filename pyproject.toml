@@ -16,6 +16,7 @@ dependencies = [
     "pycountry>=24.6",
     "statsmodels>=0.14",
     "nbconvert>=7.14",
+    "geopy>=2.4",
 ]
 
 [project.optional-dependencies]
