@@ -79,6 +79,28 @@ Gaps 1 and 4 are directly answerable with fermentation samples from Nogales. Gap
 
 See [data-sources.md](data-sources.md) for the full inventory with URLs, formats, and API details.
 
+## How this research helps Nogales
+
+### Immediate (this harvest season)
+
+- **The data pipeline (Q3) reveals where value is lost.** Structured lot tracking would surface patterns like "lots that dried at X moisture rate scored 2 points higher" or "block A discards 15% at float sorting vs 5% from block B — why?" That's margin sitting in the data.
+- **Lot-specific roast optimization.** Connecting Roest profiles back to processing parameters means optimizing roast curves per lot instead of using a generic profile. A natural Geisha and a washed Caturra from the same farm want different roasts — the pipeline makes that obvious from data instead of trial and error.
+
+### Medium-term (1–2 seasons)
+
+- **Process control, not just recipes.** Microbial profiling (Q1) moves fermentation from "72 hours because that's what works" to "ferment until the LAB-to-yeast ratio hits this target." That's how you get consistency across lots and seasons — the difference between a recipe and a controlled process.
+- **Parcel-level variety placement.** If Nogales has parcels at different elevations or soil types, understanding the microbial and chemical differences between them (Q2) means assigning varieties and processing methods to the plots where they'll perform best. Plant Geisha where the soil and microbes favor its expression, not just where there's space.
+
+### Longer-term (competitive positioning)
+
+- **Data-backed traceability narratives.** Specialty buyers increasingly want traceability backed by science. A farm that can say "this lot's chlorogenic acid profile was shaped by our specific fermentation protocol, verified by metabolomic analysis" is selling a fundamentally different product than "washed Geisha, 1800m." That commands premium pricing.
+- **Functional coffee / bioactives market.** The pharmacognosy angle (Q4) opens markets beyond cup score — functional coffee, health-positioned products, nutraceutical partnerships. If Nogales can show their fermentation approach preserves or enhances specific bioactive compounds (e.g., higher CGA retention, specific microbial metabolites), that's a value proposition beyond flavor.
+- **Research site brand equity.** Published results on variety-specific microbiome profiles or Colombian microbial terroir would make Nogales a named research site. Farms like Finca El Injerto and Hacienda La Esmeralda benefit enormously from this association with innovation — it's brand equity in the specialty market.
+
+**The core insight:** Most specialty farms optimize for one variable — cupping score. This research gives Nogales multiple optimization axes (microbial health, bioactive content, processing efficiency, lot consistency) that all feed back into both quality and margin. The data pipeline is the foundation; everything else builds on it.
+
+---
+
 ## Relationship to `what-makes-coffee-score-high`
 
 That research track asks: *what predicts cupping score?*
