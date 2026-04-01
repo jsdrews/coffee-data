@@ -65,6 +65,14 @@ tasks:
     status:
       - test -f data/processed/cqi_with_climate.csv
 
+  soil:merge:
+    desc: Fetch SoilGrids data and merge with CQI+climate dataset
+    deps: [setup, climate:merge]
+    cmds:
+      - uv run python scrapers/soil.py
+    status:
+      - test -f data/processed/cqi_with_climate_soil.csv
+
   # ---------- Notebooks ----------
 
   notebook:

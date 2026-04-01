@@ -16,6 +16,7 @@ import asyncio
 import io
 import struct
 import sys
+import zlib
 from pathlib import Path
 
 import aiohttp
@@ -113,9 +114,9 @@ async def fetch_one_rest(
 def _parse_tiff_value(data: bytes) -> float | None:
     """Extract the first pixel value from a minimal GeoTIFF.
 
-    SoilGrids WCS returns single-pixel GeoTIFFs. We parse just enough
-    of the TIFF structure to find the strip data, avoiding a heavy
-    dependency on rasterio/GDAL.
+    SoilGrids WCS returns small tiled, deflate-compressed GeoTIFFs.
+    We parse the TIFF IFD to find tile data, decompress it, and read
+    the first pixel value — avoiding a heavy rasterio/GDAL dependency.
     """
     if len(data) < 8:
         return None
@@ -142,8 +143,12 @@ def _parse_tiff_value(data: bytes) -> float | None:
     num_entries = struct.unpack(f"{endian}H", data[ifd_offset:ifd_offset + 2])[0]
 
     strip_offset = None
+    tile_offset = None
+    tile_byte_count = None
     bits_per_sample = 16
     sample_format = 1  # 1=uint, 2=int, 3=float
+    compression = 1  # 1=none, 8=deflate
+    predictor = 1  # 1=none, 2=horizontal differencing
 
     pos = ifd_offset + 2
     for _ in range(num_entries):
@@ -160,59 +165,84 @@ def _parse_tiff_value(data: bytes) -> float | None:
         else:
             val = struct.unpack(f"{endian}I", value_offset)[0]
 
-        if tag == 273:    # StripOffsets
+        if tag == 273:      # StripOffsets
             strip_offset = val
-        elif tag == 258:  # BitsPerSample
+        elif tag == 324:    # TileOffsets
+            tile_offset = val
+        elif tag == 325:    # TileByteCounts
+            tile_byte_count = val
+        elif tag == 258:    # BitsPerSample
             bits_per_sample = val
-        elif tag == 339:  # SampleFormat
+        elif tag == 339:    # SampleFormat
             sample_format = val
+        elif tag == 259:    # Compression
+            compression = val
+        elif tag == 317:    # Predictor
+            predictor = val
 
         pos += 12
 
-    if strip_offset is None:
+    # Determine where pixel data starts
+    data_offset = strip_offset or tile_offset
+    if data_offset is None:
         return None
 
-    # Read the pixel value
+    # Get the raw (possibly compressed) pixel bytes
+    if tile_byte_count and tile_offset:
+        raw_pixels = data[tile_offset:tile_offset + tile_byte_count]
+    elif strip_offset:
+        # For strips, read enough bytes for a few pixels
+        byte_size = max(bits_per_sample // 8, 1) * 4
+        raw_pixels = data[strip_offset:strip_offset + byte_size]
+    else:
+        return None
+
+    # Decompress if needed
+    if compression == 8:  # Deflate/zlib
+        try:
+            raw_pixels = zlib.decompress(raw_pixels)
+        except zlib.error:
+            return None
+    elif compression != 1:
+        return None  # Unsupported compression
+
+    # Undo horizontal differencing predictor if present
+    if predictor == 2 and len(raw_pixels) > (bits_per_sample // 8):
+        bps = bits_per_sample // 8
+        arr = bytearray(raw_pixels)
+        for i in range(bps, len(arr)):
+            arr[i] = (arr[i] + arr[i - bps]) & 0xFF
+        raw_pixels = bytes(arr)
+
+    if len(raw_pixels) < (bits_per_sample // 8):
+        return None
+
+    # Read the first pixel value
     if sample_format == 3:  # float
         if bits_per_sample == 32:
-            if strip_offset + 4 > len(data):
-                return None
-            val = struct.unpack(f"{endian}f", data[strip_offset:strip_offset + 4])[0]
+            val = struct.unpack(f"{endian}f", raw_pixels[:4])[0]
         elif bits_per_sample == 64:
-            if strip_offset + 8 > len(data):
-                return None
-            val = struct.unpack(f"{endian}d", data[strip_offset:strip_offset + 8])[0]
+            val = struct.unpack(f"{endian}d", raw_pixels[:8])[0]
         else:
             return None
     elif sample_format == 2:  # signed int
         if bits_per_sample == 16:
-            if strip_offset + 2 > len(data):
-                return None
-            val = struct.unpack(f"{endian}h", data[strip_offset:strip_offset + 2])[0]
+            val = struct.unpack(f"{endian}h", raw_pixels[:2])[0]
         elif bits_per_sample == 32:
-            if strip_offset + 4 > len(data):
-                return None
-            val = struct.unpack(f"{endian}i", data[strip_offset:strip_offset + 4])[0]
+            val = struct.unpack(f"{endian}i", raw_pixels[:4])[0]
         else:
             return None
     else:  # unsigned int
         if bits_per_sample == 8:
-            if strip_offset + 1 > len(data):
-                return None
-            val = struct.unpack(f"{endian}B", data[strip_offset:strip_offset + 1])[0]
+            val = struct.unpack(f"{endian}B", raw_pixels[:1])[0]
         elif bits_per_sample == 16:
-            if strip_offset + 2 > len(data):
-                return None
-            val = struct.unpack(f"{endian}H", data[strip_offset:strip_offset + 2])[0]
+            val = struct.unpack(f"{endian}H", raw_pixels[:2])[0]
         elif bits_per_sample == 32:
-            if strip_offset + 4 > len(data):
-                return None
-            val = struct.unpack(f"{endian}I", data[strip_offset:strip_offset + 4])[0]
+            val = struct.unpack(f"{endian}I", raw_pixels[:4])[0]
         else:
             return None
 
-    # SoilGrids nodata is typically a very large negative or 0 for unsigned
-    # -32768 is common nodata for int16
+    # SoilGrids nodata values
     if val == -32768 or val == 65535 or val == -2147483648:
         return None
 
