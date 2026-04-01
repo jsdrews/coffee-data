@@ -2,6 +2,11 @@
 
 Collecting and analyzing data from the coffee industry — focusing on how climate influences fermentation and cup quality across farms worldwide.
 
+## Research Tracks
+
+- **[What Makes Coffee Score High?](docs/what-makes-coffee-score-high/)** — Analysis of ~1,300 CQI coffees and 17,000+ Cup of Excellence entries. Key findings: flavor/aftertaste drive score, soil explains 70x more variance than altitude, country is the strongest predictor.
+- **[Coffee Pharmacognosy](docs/coffee-pharmacognosy/)** — Fermentation-to-function science: how variety, terroir, and processing shape microbial communities and bioactive compounds with therapeutic potential. Includes a data sources inventory and research gap analysis.
+
 ## Data Sources
 
 - **[CQI Coffee Quality Database](https://www.kaggle.com/datasets/fatihb/coffee-quality-data-cqi)** — ~1,300 coffees with farm info, processing methods, and cupping scores
