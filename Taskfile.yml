@@ -45,9 +45,44 @@ tasks:
       - mkdir -p {{.DATA_RAW}}
       - uv run python scrapers/nasa_power.py
 
+  scrape:phenol-explorer:
+    desc: Scrape Phenol-Explorer coffee polyphenol data
+    deps: [setup]
+    cmds:
+      - mkdir -p {{.DATA_RAW}}
+      - uv run python scrapers/phenol_explorer.py
+
+  scrape:pubchem:
+    desc: Pull PubChem bioassay data for key coffee compounds
+    deps: [setup]
+    cmds:
+      - mkdir -p {{.DATA_RAW}}
+      - uv run python scrapers/pubchem.py
+
+  scrape:wcr:
+    desc: Scrape World Coffee Research variety catalog
+    deps: [setup]
+    cmds:
+      - mkdir -p {{.DATA_RAW}}
+      - uv run python scrapers/wcr_varieties.py
+
+  scrape:chembl:
+    desc: Pull ChEMBL bioactivity data for coffee compounds
+    deps: [setup]
+    cmds:
+      - mkdir -p {{.DATA_RAW}}
+      - uv run python scrapers/chembl.py
+
+  scrape:foodb:
+    desc: Extract coffee compound data from FooDB bulk dump
+    deps: [setup]
+    cmds:
+      - mkdir -p {{.DATA_RAW}}
+      - uv run python scrapers/foodb.py
+
   scrape:
     desc: Run all scrapers/data collection concurrently
-    deps: [scrape:cqi, scrape:coe, scrape:climate]
+    deps: [scrape:cqi, scrape:coe, scrape:climate, scrape:phenol-explorer, scrape:pubchem, scrape:wcr, scrape:chembl, scrape:foodb]
 
   geocode:
     desc: Geocode CQI farm regions to lat/lon coordinates
@@ -86,7 +121,7 @@ tasks:
     deps: [setup]
     cmds:
       - mkdir -p docs
-      - uv run jupyter nbconvert --to html --execute --no-input --output-dir=docs notebooks/what_makes_coffee_score_high.ipynb
+      - uv run jupyter nbconvert --to html --execute --no-input --output-dir=docs notebooks/*.ipynb
       - echo "Exported to docs/"
 
   # ---------- Data Inspection ----------

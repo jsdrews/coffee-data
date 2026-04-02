@@ -54,9 +54,29 @@ Compounds of interest at the intersection of fermentation microbiology and pharm
 | Diterpenes | Cafestol, kahweol | Anti-inflammatory, potentially anti-carcinogenic | Largely retained through roasting |
 | Caffeine | — | Stimulant, synergistic effects with other coffee compounds | Relatively stable through processing |
 
+**What are bioactive compounds?** Chemical compounds in coffee that have a measurable effect on human biology beyond basic nutrition. Caffeine is the obvious one (blocks adenosine receptors → alertness), but coffee has hundreds of others. "Bioactive" simply means "biologically active" — it does something to your cells or systems.
+
+**Why care about preserving or enhancing them?** Because processing destroys some and creates others. Roasting degrades 50–80% of chlorogenic acids but creates melanoidins (which are prebiotic). Fermentation produces microbial metabolites that don't exist in the raw cherry. The choices a farm makes — how long to ferment, how hot to roast — literally change the health profile of the final cup. If you can show "our process retains 2x the chlorogenic acid content," that's a sellable claim to health-conscious buyers and potentially to nutraceutical companies.
+
 **Core question:** Can fermentation conditions be tuned to enhance or preserve specific bioactive compounds? This connects questions 1-3 (microbiology + processing pipeline) to pharmacological endpoints.
 
 **Career paths:** Natural products chemistry / pharmacognosy, food bioactives research, microbial biotechnology. Relevant institutions: CIRAD, Cenicafé, university food science programs.
+
+## What the pipeline stages measure and why they matter
+
+Each stage of the harvest-to-cup pipeline is a transformation that changes the bean physically and chemically. The measurements at each stage are the independent variables; cupping score is the dependent variable.
+
+| Stage | What's actually happening | What the measurements tell you |
+|-------|--------------------------|-------------------------------|
+| Harvest (Brix, weight) | Sugar content of the cherry at picking | Higher Brix = riper cherry = more fermentable sugars = more flavor precursors |
+| Float sorting (discard weight) | Underdeveloped/defective cherries float | What % of harvest is unusable — a quality and yield metric |
+| Fermentation (temp, pH, duration) | Microbes eat sugars, produce acids, alcohols, esters | These metabolites become flavor precursors. pH drop = acid production. Temp affects which microbes dominate |
+| Drying (temp, moisture, days) | Water removal, continued slow chemical reactions | Too fast = uneven drying = defects. Too slow = mold risk. Target moisture ~10–12% |
+| Defect sorting (discard weight) | Remove beans with physical defects (insect damage, mold, broken) | More defects removed = cleaner cup, but also = lower yield |
+| Roasting (RoR, development time, first crack) | Maillard reaction, caramelization, CGA degradation | Controls acidity, body, sweetness, bitterness in the final cup |
+| Cupping (SCA score) | Standardized tasting: aroma, flavor, aftertaste, acidity, body, balance | The output variable — what everything upstream is trying to optimize |
+
+With enough lots tracked through this pipeline, you can run regressions to find which upstream variables actually predict cupping score — and which don't matter as much as people assume.
 
 ## Data landscape summary
 
@@ -79,6 +99,22 @@ Gaps 1 and 4 are directly answerable with fermentation samples from Nogales. Gap
 
 See [data-sources.md](data-sources.md) for the full inventory with URLs, formats, and API details.
 
+## Next steps: what we can build now
+
+The research has two layers: a **reference library** (what's already known about coffee compounds and varieties) and **experiments** (new data from Nogales fermentations and sequencing). The scrapes below build the reference library — they're prerequisite context that makes the lab work interpretable.
+
+| Scrape | What it gives us | Which question it serves | Why it's needed |
+|--------|-----------------|------------------------|-----------------|
+| **Phenol-Explorer** | Baseline polyphenol inventory — what's in coffee, at what concentrations | Q4 (bioactives) | You need to know what's there before you can ask what processing does to it |
+| **PubChem bioassays** | What these compounds *do* pharmacologically — target proteins, potency, mechanisms | Q4 (therapeutic potential) | Answers "why should anyone care about chlorogenic acid?" with data, not claims |
+| **World Coffee Research catalog** | Agronomic and sensory profiles for 55 varieties — genetic lineage, altitude ranges, disease resistance | Q1 (variety differences) | Baseline for understanding *why* varieties might host different microbes (different mucilage, different chemistry) |
+| **ChEMBL bioactivity** | Detailed potency data (IC50, EC50) for coffee compounds against specific drug targets | Q4 | The bridge between "coffee contains X" and "X could treat Y" |
+| **FooDB** | Broader chemical inventory — all known coffee compounds with concentrations, not just polyphenols | Q3 + Q4 | Reference dataset for what compounds to look for at each pipeline stage |
+
+None of these directly answer Q1 (variety microbiome) or Q2 (terroir microbiome) — those require fermentation samples and 16S/ITS sequencing, which is lab work at Nogales. But without the reference library, you wouldn't know what compounds matter, why they matter, or what to measure in those samples.
+
+**Think of it as: scrapes = reference library, Nogales data = the experiment, pipeline = the instrument connecting them.**
+
 ## How this research helps Nogales
 
 ### Immediate (this harvest season)
@@ -98,6 +134,46 @@ See [data-sources.md](data-sources.md) for the full inventory with URLs, formats
 - **Research site brand equity.** Published results on variety-specific microbiome profiles or Colombian microbial terroir would make Nogales a named research site. Farms like Finca El Injerto and Hacienda La Esmeralda benefit enormously from this association with innovation — it's brand equity in the specialty market.
 
 **The core insight:** Most specialty farms optimize for one variable — cupping score. This research gives Nogales multiple optimization axes (microbial health, bioactive content, processing efficiency, lot consistency) that all feed back into both quality and margin. The data pipeline is the foundation; everything else builds on it.
+
+---
+
+## Analysis findings
+
+Analysis notebook: [`notebooks/coffee_pharmacognosy.ipynb`](../../notebooks/coffee_pharmacognosy.ipynb)
+
+### Key findings
+
+| Finding | Source | Strength |
+|---------|--------|----------|
+| Coffee polyphenols are dominated by 3 caffeoylquinic acids (~180 mg/cup combined) | Phenol-Explorer | Strong — direct measurement |
+| Robusta has 1.5–2x higher CGA concentrations than Arabica | Phenol-Explorer, FooDB | Strong — consistent across databases |
+| Arabica has dramatically higher lipid content (oleic acid ~54x, linolenic acid ~400x) | FooDB | Observed — may reflect preparation method differences |
+| Chlorogenic acid reaches drug-like potency (pChEMBL 7.0 = 100 nM) against multiple targets | ChEMBL | Observed — in vitro, not clinical |
+| Trigonelline has the highest max potency of any coffee compound (pChEMBL 7.89) but sparse data | ChEMBL | Weak — only 4 measurements with potency data |
+| Caffeine's primary targets are adenosine receptors A1/A2a/A2b/A3 (3,024 records) | ChEMBL | Strong — well-characterized |
+| Quality-yield tradeoff is real: Exceptional varieties are mostly Low–Medium yield | WCR (70 varieties) | Strong |
+| Geisha scores 1+ point above all other varieties in Cup of Excellence (89.23 mean, n=544) | WCR + CoE | Strong — large sample |
+| WCR quality ratings broadly predict CoE scores, but separation narrows at top tiers | WCR + CoE | Moderate — CoE pre-filters to top lots |
+
+### What to measure at Nogales
+
+Based on the reference data, the compounds most worth tracking through the harvest-to-cup pipeline:
+
+1. **Chlorogenic acids (especially 5-CQA)** — highest concentration (~70 mg/100 ml in filter coffee), most processing-sensitive (40–80% loss during roasting), pharmacologically active against inflammation and oxidative stress targets
+2. **Trigonelline** — neuroprotective, partially converts to niacin (vitamin B3) during roasting; sparse pharmacological data means new measurements are publishable
+3. **Caffeine** — stable through processing but varies by variety; most-studied coffee compound with clear mechanism (adenosine receptor antagonism)
+4. **Lipid profile (oleic/linolenic acids)** — affects mouthfeel and body, varies dramatically between species and likely between varieties
+5. **Microbial metabolites** — fermentation-specific compounds not present in the cherry (organic acids, esters, alcohols) — this is the data that doesn't exist yet and represents the biggest research opportunity
+
+### Datasets collected
+
+| Dataset | Records | What it provides |
+|---------|---------|-----------------|
+| [Phenol-Explorer](http://phenol-explorer.eu) | 69 | Polyphenol concentrations for 4 coffee types |
+| [FooDB](https://foodb.ca) | 16,340 | Full chemical inventory for Arabica, Robusta, general coffee |
+| [PubChem](https://pubchem.ncbi.nlm.nih.gov) | 5,510 | Bioassay results for 5 key compounds (156 active) |
+| [ChEMBL](https://www.ebi.ac.uk/chembl/) | 3,333 | Bioactivity measurements against protein targets |
+| [World Coffee Research](https://varieties.worldcoffeeresearch.org) | 70 | Arabica variety agronomic profiles |
 
 ---
 
