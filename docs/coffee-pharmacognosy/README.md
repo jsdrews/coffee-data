@@ -109,6 +109,8 @@ Also cross-referenced with existing project datasets:
 
 See [data-sources.md](data-sources.md) for the full inventory with URLs, formats, and API details.
 
+See [pipeline.md](pipeline.md) for the full pipeline outline: what to measure, what to prove, and how it helps Nogales.
+
 ## Data landscape
 
 **Key gaps — where the research opportunities are:**
