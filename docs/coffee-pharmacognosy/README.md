@@ -78,15 +78,38 @@ Each stage of the harvest-to-cup pipeline is a transformation that changes the b
 
 With enough lots tracked through this pipeline, you can run regressions to find which upstream variables actually predict cupping score — and which don't matter as much as people assume.
 
-## Data landscape summary
+## Data sources
 
-**What exists and is accessible:**
-- Fermentation microbiome sequencing data on NCBI SRA (multiple BioProjects, including Colombian farms and altitude comparisons)
-- Chemical compound databases with API/bulk access: Phenol-Explorer (polyphenols), FooDB (bulk CSV/SQL), PubChem (bioassays), ChEMBL (target/potency)
-- Pharmacological and clinical data: ChEMBL, DrugBank, CTD (compound-gene-disease), ClinicalTrials.gov
-- Climate and soil data already integrated in this project (NASA POWER, SoilGrids), plus CHIRPS, WorldClim, IGAC (Colombian soil surveys)
-- World Coffee Research variety catalog (55 arabica varieties, scrapable)
-- Cenicafé digital repository (Colombian variety trials, 290 climate stations — mostly PDFs)
+### Collected (scraped/downloaded)
+
+| Source | Records | What it provides | Scraper |
+|--------|---------|-----------------|---------|
+| [Phenol-Explorer](http://phenol-explorer.eu) | 69 | Polyphenol concentrations for 4 coffee beverage types (filter, espresso, Arabica filter, Robusta filter) | `scrapers/phenol_explorer.py` |
+| [FooDB](https://foodb.ca) | 16,340 | Full chemical inventory — all known compounds with concentrations for Arabica, Robusta, general coffee, coffee mocha | `scrapers/foodb.py` |
+| [PubChem](https://pubchem.ncbi.nlm.nih.gov) | 5,510 | Bioassay results for 5 key compounds: caffeine, chlorogenic acid, cafestol, kahweol, trigonelline (156 active) | `scrapers/pubchem.py` |
+| [ChEMBL](https://www.ebi.ac.uk/chembl/) | 3,333 | Bioactivity measurements (IC50, EC50, Ki, pChEMBL) against specific protein targets | `scrapers/chembl.py` |
+| [World Coffee Research](https://varieties.worldcoffeeresearch.org) | 70 | Arabica variety catalog — quality potential, yield, disease resistance, stature, lineage | `scrapers/wcr_varieties.py` |
+
+Also cross-referenced with existing project datasets:
+- **CQI** (1,311 coffees) — cupping scores, variety, processing, country
+- **Cup of Excellence** (17,211 lots) — competition scores, variety, farm, region
+- **NASA POWER** — climate data for farm locations
+- **ISRIC SoilGrids** — soil properties for farm locations
+
+### Not yet collected (future opportunities)
+
+| Source | Type | Relevance |
+|--------|------|-----------|
+| [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra) | Fermentation microbiome sequencing (16S/ITS) | Q1, Q2 — multiple BioProjects including Colombian farms |
+| [DrugBank](https://go.drugbank.com/) | Approved drug interactions with coffee compounds | Q4 — clinical relevance |
+| [CTD](http://ctdbase.org/) | Compound-gene-disease associations | Q4 — connects compounds to disease pathways |
+| [Cenicafé](https://www.cenicafe.org/) | Colombian variety trials, 290 climate stations | Q2, Q3 — mostly PDFs, limited API |
+| [MetaboLights](https://www.ebi.ac.uk/metabolights/) | Coffee metabolomics studies | Q1, Q4 — fermentation metabolite profiles |
+| [IGAC](https://www.igac.gov.co/) | Colombian soil surveys | Q2 — detailed regional soil data |
+
+See [data-sources.md](data-sources.md) for the full inventory with URLs, formats, and API details.
+
+## Data landscape
 
 **Key gaps — where the research opportunities are:**
 1. **No controlled variety-specific microbiome comparison exists.** Nobody has done Geisha vs. Bourbon vs. Typica vs. Caturra under the same fermentation conditions. This is publishable and doable with access to Nogales lots.
@@ -107,7 +130,7 @@ The research has two layers: a **reference library** (what's already known about
 |--------|-----------------|------------------------|-----------------|
 | **Phenol-Explorer** | Baseline polyphenol inventory — what's in coffee, at what concentrations | Q4 (bioactives) | You need to know what's there before you can ask what processing does to it |
 | **PubChem bioassays** | What these compounds *do* pharmacologically — target proteins, potency, mechanisms | Q4 (therapeutic potential) | Answers "why should anyone care about chlorogenic acid?" with data, not claims |
-| **World Coffee Research catalog** | Agronomic and sensory profiles for 55 varieties — genetic lineage, altitude ranges, disease resistance | Q1 (variety differences) | Baseline for understanding *why* varieties might host different microbes (different mucilage, different chemistry) |
+| **World Coffee Research catalog** | Agronomic and sensory profiles for 70 varieties — genetic lineage, altitude ranges, disease resistance | Q1 (variety differences) | Baseline for understanding *why* varieties might host different microbes (different mucilage, different chemistry) |
 | **ChEMBL bioactivity** | Detailed potency data (IC50, EC50) for coffee compounds against specific drug targets | Q4 | The bridge between "coffee contains X" and "X could treat Y" |
 | **FooDB** | Broader chemical inventory — all known coffee compounds with concentrations, not just polyphenols | Q3 + Q4 | Reference dataset for what compounds to look for at each pipeline stage |
 
@@ -164,16 +187,6 @@ Based on the reference data, the compounds most worth tracking through the harve
 3. **Caffeine** — stable through processing but varies by variety; most-studied coffee compound with clear mechanism (adenosine receptor antagonism)
 4. **Lipid profile (oleic/linolenic acids)** — affects mouthfeel and body, varies dramatically between species and likely between varieties
 5. **Microbial metabolites** — fermentation-specific compounds not present in the cherry (organic acids, esters, alcohols) — this is the data that doesn't exist yet and represents the biggest research opportunity
-
-### Datasets collected
-
-| Dataset | Records | What it provides |
-|---------|---------|-----------------|
-| [Phenol-Explorer](http://phenol-explorer.eu) | 69 | Polyphenol concentrations for 4 coffee types |
-| [FooDB](https://foodb.ca) | 16,340 | Full chemical inventory for Arabica, Robusta, general coffee |
-| [PubChem](https://pubchem.ncbi.nlm.nih.gov) | 5,510 | Bioassay results for 5 key compounds (156 active) |
-| [ChEMBL](https://www.ebi.ac.uk/chembl/) | 3,333 | Bioactivity measurements against protein targets |
-| [World Coffee Research](https://varieties.worldcoffeeresearch.org) | 70 | Arabica variety agronomic profiles |
 
 ---
 
