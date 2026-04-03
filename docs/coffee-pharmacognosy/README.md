@@ -111,7 +111,9 @@ See [data-sources.md](data-sources.md) for the full inventory with URLs, formats
 
 See [pipeline.md](pipeline.md) for the full pipeline outline: what to measure, what to prove, and how it helps Nogales.
 
-See [six-week-plan.md](six-week-plan.md) for the April–May 2026 field plan: week-by-week schedule, equipment checklist, and deliverables.
+See [six-week-plan.md](six-week-plan.md) for the 2026 field plan: Option A (leave mid-May) and Option B (stay through full harvest), with week-by-week schedules, equipment checklist, and deliverables.
+
+See [pitch-to-farm.md](pitch-to-farm.md) for why this is a good deal for Nogales — framed from the farm's perspective.
 
 ## Data landscape
 
