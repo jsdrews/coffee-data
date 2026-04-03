@@ -111,6 +111,8 @@ See [data-sources.md](data-sources.md) for the full inventory with URLs, formats
 
 See [pipeline.md](pipeline.md) for the full pipeline outline: what to measure, what to prove, and how it helps Nogales.
 
+See [six-week-plan.md](six-week-plan.md) for the April–May 2026 field plan: week-by-week schedule, equipment checklist, and deliverables.
+
 ## Data landscape
 
 **Key gaps — where the research opportunities are:**
