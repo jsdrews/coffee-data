@@ -117,6 +117,8 @@ See [pitch-to-farm.md](pitch-to-farm.md) for why this is a good deal for Nogales
 
 See [field-observations.md](field-observations.md) for the April 3 walk-around observations, harvest timing assessment, and variety inventory.
 
+See [antimicrobial-research.md](antimicrobial-research.md) for research on coffee compounds as antibacterial agents and antibiotic adjuvants, with key researchers to contact.
+
 ## Data landscape
 
 **Key gaps — where the research opportunities are:**
