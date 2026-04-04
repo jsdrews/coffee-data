@@ -115,6 +115,8 @@ See [six-week-plan.md](six-week-plan.md) for the 2026 field plan: Option A (leav
 
 See [pitch-to-farm.md](pitch-to-farm.md) for why this is a good deal for Nogales — framed from the farm's perspective.
 
+See [field-observations.md](field-observations.md) for the April 3 walk-around observations, harvest timing assessment, and variety inventory.
+
 ## Data landscape
 
 **Key gaps — where the research opportunities are:**
