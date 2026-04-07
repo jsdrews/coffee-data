@@ -1,6 +1,96 @@
-# Field Observations: April 3, 2026
+# Field Observations
 
-Walk-around observations from Nogales farm, Bruselas, Huila.
+Observations and updates from Nogales farm, Bruselas, Huila.
+
+---
+
+## April 6: Project update — three active workstreams
+
+She has three components running in parallel, all connected through the soil → plant → cherry → cup pipeline.
+
+### Component 1: Lab microcosm study (pH stabilization) — wrapping up
+
+Studying the effects of fresh coffee byproducts on soil pH vs. mature compost.
+
+**What Nogales does:** Coffee waste (fermentation mosto, pulp, husks, parchment, grounds) + food scraps → turned and dried for ~1 month → stabilized mature compost with safe pH. This is applied to coffee plants (Geisha gets the premium treatment).
+
+**What she's testing:** Fresh mosto or fresh pulp added directly to soil vs. mature compost — tracking visual changes and pH over time. First round ran too long with concentrations too high. Now repeating:
+- 100g soil, lower concentrations of mosto/pulp
+- pH readings at day 1, 3, 5, 7
+- Goal: verify literature that pH stabilizes after ~1 week
+- Jars prepared April 6, waiting on fresh mosto/pulp (arriving ~April 7)
+
+**Why it matters:** Many farms around Bruselas dump fresh pulp directly onto coffee plants without composting. Fresh byproducts are acidic and potentially phytotoxic. Showing that pH takes ~1 week to stabilize — and that Nogales' month-long composting process is scientifically sound — is a teachable finding for the local coffee community.
+
+**Time required:** Minimal. 4 pH readings over one week, ~15 min per reading. Done by ~April 14.
+
+### Component 2: Microbial inoculation tanks (second farm) — new
+
+Nogales has a **second property** that's just now becoming harvestable (plants have been growing for years). This farm uses a more advanced soil treatment: **microbial inoculation**.
+
+**Setup:** They buy ~1 kg at a time of commercially available beneficial soil microbes and multiply them in 1,000-liter tanks before application.
+
+**Organisms identified:**
+- **Bacillus** spp. — soil probiotic bacteria. Nitrogen fixation, phosphorus solubilization, disease suppression. Widely used in agriculture as biofertilizer.
+- **Beauveria** (likely *B. bassiana*) — entomopathogenic fungus. Infects and kills coffee berry borer (*Hypothenemus hampei* / broca) and other insect pests. Biological pest control alternative to chemical pesticides.
+- **Metarhizium** (likely *M. anisopliae*) — another entomopathogenic fungus. Complementary to Beauveria, different host range. Also used for broca control.
+
+**What the farm wants:**
+1. Model growth curves of these organisms in the tanks
+2. Identify/flag potential contamination
+
+**Challenges:**
+- Mixed-culture growth modeling is non-trivial without proper microbiology lab equipment
+- Contamination detection ideally requires plating, microscopy, or sequencing
+- Tank conditions (temperature, aeration, nutrient medium, pH) all affect growth dynamics
+- She may need to scope this to what's achievable with available equipment
+
+**Why it matters:** This is biological crop management — replacing chemical pesticides and synthetic fertilizers with targeted beneficial microbes. If she can characterize the tank dynamics and help the farm quality-control their inoculant production, that's both practically useful and scientifically interesting. The broca (coffee berry borer) is the #1 pest threat to specialty coffee worldwide.
+
+### Component 3: Harvest-to-cup data pipeline — ready, waiting for cherry
+
+The lot tracking framework we built. Harvest is imminent ("very, very soon"). See [pipeline.md](pipeline.md) and [six-week-plan.md](six-week-plan.md) for the full design.
+
+### How the three components connect
+
+These are one story at three scales:
+
+```
+SOIL TREATMENT → PLANT HEALTH → CHERRY QUALITY → FERMENTATION → CUP
+      ↑                                                   ↑
+  Component 1 & 2                                   Component 3
+  (what goes into the soil)                   (what comes out of the cherry)
+```
+
+- Component 1 proves Nogales' composting practice is scientifically sound
+- Component 2 characterizes their advanced biological inputs (beneficial microbes)
+- Component 3 captures what those inputs ultimately produce (cherry quality, cupping score)
+
+The unifying narrative: **soil health is upstream of everything in specialty coffee.** Most farms optimize at the processing stage (fermentation, drying, roasting). Nogales is also optimizing at the soil stage — and they're doing it with both traditional methods (mature compost) and advanced methods (microbial inoculation). The data pipeline connects soil inputs to cup outputs.
+
+### Timeline
+
+| Week | Comp 1 (pH study) | Comp 2 (inoculation tanks) | Comp 3 (harvest pipeline) |
+|------|-------------------|---------------------------|--------------------------|
+| Apr 6–12 | Add mosto/pulp, pH at day 1, 3, 5, 7 | Visit second farm, document tank setup, sample if possible | Finalize lot tracking, confirm equipment |
+| Apr 13–19 | **Done.** Write up | Research growth models, plan sampling | Watch for first ripe cherry |
+| Apr 20+ | — | Tank sampling if access available | **Harvest starts.** Full pipeline active |
+
+Component 1 is trivial work — 4 readings in a week. It doesn't compete with anything else. Component 2 needs scoping (what's achievable without a full lab?). Component 3 is the main event once cherry arrives.
+
+### Soil care at Nogales — variety-specific treatment
+
+From the April 3 walk and WCR data:
+- **Geisha receives the mature compost** (premium treatment). Geisha is WCR-classified as Low yield, Exceptional quality, Susceptible to disease — a demanding variety that responds strongly to nutrition.
+- **Tipica babies** are also compost-treated (visible in photos — dark compost mounds around seedlings).
+- **Java** has "low fertilizer requirement" per WCR — hardier, less demanding.
+- **The second farm** goes further with microbial inoculation (Bacillus + Beauveria + Metarhizium) — targeted biological inputs beyond just compost.
+
+This suggests Nogales is already making variety-specific soil decisions, even if not explicitly framed that way. The Geisha gets the best compost because it needs it most and returns the most value.
+
+---
+
+## April 3: Farm walk observations
 
 ## Varieties observed
 

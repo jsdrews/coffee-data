@@ -2,6 +2,14 @@
 
 Two options depending on how long she stays. Both start April 3, 2026.
 
+## Active workstreams (as of April 6)
+
+Three components running in parallel — see [field-observations.md](field-observations.md) for full details:
+
+1. **Lab microcosm study** — pH stabilization of fresh coffee byproducts in soil. Wrapping up: 4 pH readings over 1 week (~April 7–14). Minimal time commitment.
+2. **Microbial inoculation tanks** — Modeling growth of Bacillus/Beauveria/Metarhizium in 1,000L tanks at the second farm. New ask from the farm. Needs scoping.
+3. **Harvest-to-cup data pipeline** — Lot tracking framework ready. Waiting for first ripe cherry (estimated late April).
+
 ## Harvest timing at Bruselas
 
 NASA POWER rainfall data for Bruselas (1.85°N, 76.08°W) shows a different pattern from the commonly cited "Huila main harvest = Oct–Dec":
