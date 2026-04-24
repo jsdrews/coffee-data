@@ -119,6 +119,8 @@ See [field-observations.md](field-observations.md) for the April 3 walk-around o
 
 See [antimicrobial-research.md](antimicrobial-research.md) for research on coffee compounds as antibacterial agents and antibiotic adjuvants, with key researchers to contact.
 
+See [bmei-summary.md](bmei-summary.md) for the BMEI microbial inoculation program — three bioinput formulations (biofertilizer, fungicide, insecticide), 20+ microbial species, and what she's been asked to do.
+
 ## Data landscape
 
 **Key gaps — where the research opportunities are:**
