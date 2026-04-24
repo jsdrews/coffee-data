@@ -80,9 +80,16 @@ tasks:
       - mkdir -p {{.DATA_RAW}}
       - uv run python scrapers/foodb.py
 
+  scrape:bmei:
+    desc: Pull BMEI reference data (Bruselas soil, climate, lipopeptides)
+    deps: [setup]
+    cmds:
+      - mkdir -p {{.DATA_RAW}}
+      - uv run python scrapers/bmei.py
+
   scrape:
     desc: Run all scrapers/data collection concurrently
-    deps: [scrape:cqi, scrape:coe, scrape:climate, scrape:phenol-explorer, scrape:pubchem, scrape:wcr, scrape:chembl, scrape:foodb]
+    deps: [scrape:cqi, scrape:coe, scrape:climate, scrape:phenol-explorer, scrape:pubchem, scrape:wcr, scrape:chembl, scrape:foodb, scrape:bmei]
 
   geocode:
     desc: Geocode CQI farm regions to lat/lon coordinates
